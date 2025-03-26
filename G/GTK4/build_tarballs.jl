@@ -32,7 +32,8 @@ ln -sf /usr/bin/gdk-pixbuf-pixdata ${bindir}/gdk-pixbuf-pixdata
 rm ${prefix}/lib/pkgconfig/gio-2.0.pc
 
 FLAGS=()
-if [[ "${target}" == *-apple-* ]]; then
+if [[ "${target}" == x86_64-apple-darwin* ]]; then
+    export MACOSX_DEPLOYMENT_TARGET=10.15
     FLAGS+=(-Dx11-backend=false -Dwayland-backend=false)
 
     # Install a newer SDK to work around compilation failures
@@ -97,7 +98,7 @@ products = [
     ExecutableProduct("gtk4-builder-tool", :gtk4_builder_tool),
 ]
 
-x11_platforms = filter(p -> Sys.islinux(p) || Sys.isfreebsd(p), platforms)
+x11_platforms = filter(p -> arch(p) != "riscv64" && p != "aarch64-unknown-freebsd" && Sys.islinux(p) || Sys.isfreebsd(p), platforms)
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
